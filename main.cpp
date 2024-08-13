@@ -93,6 +93,7 @@ public:
     float degToRad(int a) { return a * M_PI / 180.0; }
 
     //! я остановился тут, и после внесенных изменений компилятор выдает огромную ошибку
+    //! drawray труднейшая часть кода
     void drawRay(int a)
     {
         int rayLength = 650; // Длина луча
@@ -100,7 +101,7 @@ public:
         int endX = round(player.x + cos(degToRad(playerAngle + a)) * rayLength);
         int endY = round(player.y + sin(degToRad(playerAngle + a)) * rayLength);
 
-        std::vector<Point> intersectionPoints; //! возможно ошибка тут
+        std::vector<Point> intersectionPoints;
         for (int i = 0; i < static_cast<int>(walls.size()); i++)
         {
             Segment topSegment = {Point(walls[i].x, walls[i].y), Point(walls[i].x + walls[i].w, walls[i].y)};
@@ -115,12 +116,12 @@ public:
             boost::geometry::intersection(raySegment, rightSegment, intersectionPoints);
         }
 
-        std::vector<Point> closestPoints; //! возможно ошибка тут
+        //! возможно ошибка тут
         rtree.insert(intersectionPoints.begin(), intersectionPoints.end());
-        rtree.query(boost::geometry::index::nearest(Point(player.x - 15, player.y - 15), 2), std::back_inserter(closestPoints));
+        Point closestPoint = boost::geometry::index::nearest(Point(player.x - 15, player.y - 15), 1);
 
-        endX = boost::geometry::get<0>(closestPoints[0]);
-        endY = boost::geometry::get<1>(closestPoints[0]);
+        endX = boost::geometry::get<0>(closestPoint);
+        endY = boost::geometry::get<1>(closestPoint);
 
         SDL_SetRenderDrawColor(renderer, 37, 208, 0, 255);
         SDL_RenderDrawLine(renderer, (player.x / 5) + 15, (player.y / 5) + 15, (endX / 5) + 15, (endY / 5) + 15);

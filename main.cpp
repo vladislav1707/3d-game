@@ -101,8 +101,8 @@ public:
         int endX = round(player.x + cos(degToRad(playerAngle + a)) * rayLength);
         int endY = round(player.y + sin(degToRad(playerAngle + a)) * rayLength);
 
-        // std::vector<Point> intersectionPoints;
-        std::vector<std::pair<Point, int>> intersectionPoints;
+        std::vector<Point> intersectionPoints;
+
         for (int i = 0; i < static_cast<int>(walls.size()); i++)
         {
             Segment topSegment = {Point(walls[i].x, walls[i].y), Point(walls[i].x + walls[i].w, walls[i].y)};

@@ -101,7 +101,8 @@ public:
         int endX = round(player.x + cos(degToRad(playerAngle + a)) * rayLength);
         int endY = round(player.y + sin(degToRad(playerAngle + a)) * rayLength);
 
-        std::vector<Point> intersectionPoints;
+        // std::vector<Point> intersectionPoints;
+        std::vector<std::pair<Point, int>> intersectionPoints;
         for (int i = 0; i < static_cast<int>(walls.size()); i++)
         {
             Segment topSegment = {Point(walls[i].x, walls[i].y), Point(walls[i].x + walls[i].w, walls[i].y)};
@@ -119,7 +120,7 @@ public:
         //! возможно ошибка тут
         rtree.insert(intersectionPoints.begin(), intersectionPoints.end());
         Point closestPoint;
-        // boost::geometry::index::nearest(Point(player.x - 15, player.y - 15), 1)
+        rtree.query(boost::geometry::index::nearest(Point(player.x - 15, player.y - 15), 1), &closestPoint);
 
         endX = boost::geometry::get<0>(closestPoint);
         endY = boost::geometry::get<1>(closestPoint);

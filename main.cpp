@@ -18,8 +18,6 @@ typedef boost::geometry::model::d2::point_xy<int> Point;
 typedef boost::geometry::model::box<boost::geometry::model::point<int, 2, boost::geometry::cs::cartesian>> Box;
 typedef boost::geometry::model::segment<boost::geometry::model::point<int, 2, boost::geometry::cs::cartesian>> Segment;
 
-boost::geometry::index::rtree<std::pair<Point, int>, boost::geometry::index::quadratic<16>> rtree;
-
 bool isRunning = true;
 
 class Screen
@@ -96,6 +94,8 @@ public:
     //! drawray труднейшая часть кода
     void drawRay(int a)
     {
+        boost::geometry::index::rtree<std::pair<Point, int>, boost::geometry::index::quadratic<16>> rtree;
+
         int rayLength = 650; // Длина луча
 
         int endX = round(player.x + cos(degToRad(playerAngle + a)) * rayLength);
@@ -118,8 +118,8 @@ public:
         }
 
         //! возможно ошибка тут
-        rtree.insert(intersectionPoints.begin(), intersectionPoints.end());
         Point closestPoint;
+        rtree.insert(intersectionPoints.begin(), intersectionPoints.end());
         rtree.query(boost::geometry::index::nearest(Point(player.x - 15, player.y - 15), 1), &closestPoint);
 
         endX = boost::geometry::get<0>(closestPoint);

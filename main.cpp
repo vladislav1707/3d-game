@@ -94,8 +94,6 @@ public:
     //! drawray труднейшая часть кода
     void drawRay(int a)
     {
-        boost::geometry::index::rtree<std::pair<Point, int>, boost::geometry::index::quadratic<16>> rtree;
-
         int rayLength = 650; // Длина луча
 
         int endX = round(player.x + cos(degToRad(playerAngle + a)) * rayLength);
@@ -119,7 +117,7 @@ public:
 
         //! возможно ошибка тут
         Point closestPoint;
-        rtree.insert(intersectionPoints.begin(), intersectionPoints.end());
+        boost::geometry::index::rtree<Point, boost::geometry::index::quadratic<16>> rtree(intersectionPoints.begin(), intersectionPoints.end());
         rtree.query(boost::geometry::index::nearest(Point(player.x - 15, player.y - 15), 1), &closestPoint);
 
         endX = boost::geometry::get<0>(closestPoint);

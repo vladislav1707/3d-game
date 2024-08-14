@@ -95,8 +95,8 @@ public:
     {
         int rayLength = 650; // Длина луча
 
-        int endX = round(player.x + cos(degToRad(playerAngle + a)) * rayLength);
-        int endY = round(player.y + sin(degToRad(playerAngle + a)) * rayLength);
+        int endX = round((player.x + 15) + cos(degToRad(playerAngle + a)) * rayLength);
+        int endY = round((player.y + 15) + sin(degToRad(playerAngle + a)) * rayLength);
 
         std::vector<Point> intersectionPoints;
 
@@ -115,18 +115,21 @@ public:
         }
 
         //! возможно ошибка тут
-        Point closestPoint;
+        Point closestPoint(0, 0);
         boost::geometry::index::rtree<Point, boost::geometry::index::quadratic<16>> rtree(intersectionPoints.begin(), intersectionPoints.end());
-        rtree.query(boost::geometry::index::nearest(Point(player.x - 15, player.y - 15), 1), &closestPoint);
+        rtree.query(boost::geometry::index::nearest(Point(player.x + 15, player.y + 15), 1), &closestPoint);
 
-        endX = boost::geometry::get<0>(closestPoint);
-        endY = boost::geometry::get<1>(closestPoint);
+        if (boost::geometry::get<0>(closestPoint) != 0 && boost::geometry::get<1>(closestPoint) != 0)
+        {
+            endX = boost::geometry::get<0>(closestPoint);
+            endY = boost::geometry::get<1>(closestPoint);
+        }
 
         SDL_SetRenderDrawColor(renderer, 37, 208, 0, 255);
-        SDL_RenderDrawLine(renderer, (player.x / 5) + 15, (player.y / 5) + 15, (endX / 5), (endY / 5)); //! чинить
+        SDL_RenderDrawLine(renderer, (player.x / 5), (player.y / 5), (endX / 5), (endY / 5)); //! чинить
     }
 
-    void displayMinimap() // прямоугольники уменьшены в 5 раз на мини карте в сравнении с вектором walls
+    void display() // прямоугольники уменьшены в 5 раз на мини карте в сравнении с вектором walls
     {
         SDL_SetRenderDrawColor(renderer, 140, 140, 140, 255);
         SDL_RenderFillRect(renderer, &minimap);
@@ -207,7 +210,7 @@ int main(int argc, char **args)
         SDL_SetRenderDrawColor(screen.renderer, 0, 0, 0, 255);
         SDL_RenderClear(screen.renderer);
 
-        map.displayMinimap();
+        map.display();
 
         SDL_RenderPresent(screen.renderer);
         SDL_Delay(16);

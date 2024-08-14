@@ -118,7 +118,8 @@ public:
 
         //! возможно ошибка тут
         rtree.insert(intersectionPoints.begin(), intersectionPoints.end());
-        Point closestPoint = boost::geometry::index::nearest(Point(player.x - 15, player.y - 15), 1);
+        Point closestPoint;
+        // boost::geometry::index::nearest(Point(player.x - 15, player.y - 15), 1)
 
         endX = boost::geometry::get<0>(closestPoint);
         endY = boost::geometry::get<1>(closestPoint);

@@ -91,8 +91,7 @@ public:
     float degToRad(int a) { return a * M_PI / 180.0; }
 
     //! я остановился тут, и после внесенных изменений компилятор выдает огромную ошибку
-    //! drawray труднейшая часть кода
-    void drawRay(int a)
+    void drawRayAnd3D(int a)
     {
         int rayLength = 650; // Длина луча
 
@@ -124,7 +123,7 @@ public:
         endY = boost::geometry::get<1>(closestPoint);
 
         SDL_SetRenderDrawColor(renderer, 37, 208, 0, 255);
-        SDL_RenderDrawLine(renderer, (player.x / 5) + 15, (player.y / 5) + 15, (endX / 5) + 15, (endY / 5) + 15);
+        SDL_RenderDrawLine(renderer, (player.x / 5) + 15, (player.y / 5) + 15, (endX / 5), (endY / 5)); //! чинить
     }
 
     void displayMinimap() // прямоугольники уменьшены в 5 раз на мини карте в сравнении с вектором walls
@@ -145,7 +144,7 @@ public:
 
         for (int i = -30; i < 30; i++)
         {
-            drawRay(i);
+            drawRayAnd3D(i);
         }
 
         SDL_Rect minimapPlayer = {player.x / 5, player.y / 5, player.w, player.h};

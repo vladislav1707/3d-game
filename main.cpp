@@ -90,7 +90,7 @@ public:
 
     float degToRad(int a) { return a * M_PI / 180.0; }
 
-    //! я остановился тут, и после внесенных изменений компилятор выдает огромную ошибку
+    //! я остановился тут, надо чтобы лучи исходили из центра персонажа а не угла
     void drawRayAnd3D(int a)
     {
         int rayLength = 650; // Длина луча
@@ -106,7 +106,7 @@ public:
             Segment bottomSegment = {Point(walls[i].x, walls[i].y + walls[i].h), Point(walls[i].x + walls[i].w, walls[i].y + walls[i].h)};
             Segment leftSegment = {Point(walls[i].x, walls[i].y), Point(walls[i].x, walls[i].y + walls[i].h)};
             Segment rightSegment = {Point(walls[i].x + walls[i].w, walls[i].y), Point(walls[i].x + walls[i].w, walls[i].y + walls[i].h)};
-            Segment raySegment = {Point(player.x + 15, player.y + 15), Point(endX + 15, endY + 15)};
+            Segment raySegment = {Point(player.x + 15, player.y + 15), Point(endX, endY)};
 
             boost::geometry::intersection(raySegment, topSegment, intersectionPoints);
             boost::geometry::intersection(raySegment, bottomSegment, intersectionPoints);
@@ -114,7 +114,6 @@ public:
             boost::geometry::intersection(raySegment, rightSegment, intersectionPoints);
         }
 
-        //! возможно ошибка тут
         Point closestPoint(0, 0);
         boost::geometry::index::rtree<Point, boost::geometry::index::quadratic<16>> rtree(intersectionPoints.begin(), intersectionPoints.end());
         rtree.query(boost::geometry::index::nearest(Point(player.x + 15, player.y + 15), 1), &closestPoint);
@@ -126,7 +125,7 @@ public:
         }
 
         SDL_SetRenderDrawColor(renderer, 37, 208, 0, 255);
-        SDL_RenderDrawLine(renderer, (player.x / 5), (player.y / 5), (endX / 5), (endY / 5)); //! чинить
+        SDL_RenderDrawLine(renderer, (player.x / 5), (player.y / 5), (endX / 5), (endY / 5));
     }
 
     void display() // прямоугольники уменьшены в 5 раз на мини карте в сравнении с вектором walls

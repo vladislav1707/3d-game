@@ -47,10 +47,9 @@ public:
 class Map
 {
 public:
-    SDL_Rect minimap = {0, 0, 340, 340};
-
     // при отображении без уменьшения эти прямоугольники частично за пределами экрана
     // игровая зона от 0, 0 до 1700, 1700
+    // первая стена граница карты
     std::vector<SDL_Rect> walls = {
         {0, 0, 1700, 1700},
         {1250, 1300, 150, 200},
@@ -125,26 +124,39 @@ public:
             endY = boost::geometry::get<1>(closestPoint);
         }
 
+        int distanceToClosestPoint = round(boost::geometry::distance(Point(player.x, player.y), Point(endX, endY)));
+        SDL_Rect line3D = {(a + 30) * (a + 30), 480 - distanceToClosestPoint / 2, (a + 30) * (a + 60), distanceToClosestPoint / 2};
+        SDL_SetRenderDrawColor(renderer, 180, 180, 180, 255);
+        SDL_RenderFillRect(renderer, &line3D);
+
+        if (a == 30)
+        {
+            for (int i = 0; i < static_cast<int>(walls.size()); i++)
+            {
+                SDL_Rect wall = walls[i];
+                wall.x /= 5;
+                wall.y /= 5;
+                wall.w /= 5;
+                wall.h /= 5;
+                if (i != 0)
+                {
+                    SDL_SetRenderDrawColor(renderer, 220, 220, 220, 255);
+                    SDL_RenderDrawRect(renderer, &wall);
+                }
+                else
+                {
+                    SDL_SetRenderDrawColor(renderer, 140, 140, 140, 255);
+                    SDL_RenderFillRect(renderer, &wall);
+                }
+            }
+        }
+
         SDL_SetRenderDrawColor(renderer, 37, 208, 0, 255);
         SDL_RenderDrawLine(renderer, (player.x / 5), (player.y / 5), (endX / 5), (endY / 5));
     }
 
     void display() // прямоугольники уменьшены в 5 раз на мини карте в сравнении с вектором walls
     {
-        SDL_SetRenderDrawColor(renderer, 140, 140, 140, 255);
-        SDL_RenderFillRect(renderer, &minimap);
-
-        SDL_SetRenderDrawColor(renderer, 220, 220, 220, 255);
-        for (int i = 0; i < static_cast<int>(walls.size()); i++)
-        {
-            SDL_Rect wall = walls[i];
-            wall.x /= 5;
-            wall.y /= 5;
-            wall.w /= 5;
-            wall.h /= 5;
-            SDL_RenderDrawRect(renderer, &wall);
-        }
-
         for (int i = -30; i < 30; i++)
         {
             drawRayAnd3D(i);

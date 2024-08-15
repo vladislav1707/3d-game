@@ -1,10 +1,3 @@
-// todo: сделать миникарту и карту в векторе(сделано)
-// todo: сделать персонажа и его перемещение (сделано)
-// todo: сделать поворот персонажа (сделано)
-// todo: сделать лучи (сделано)
-// todo: сделать нахождение пересечения лучей и отобажение 3д
-// todo: сделать коллизии
-
 // 25d000 цвет для лучей и игрока
 // 37, 208, 0 в RGB
 
@@ -48,10 +41,10 @@ class Map
 {
 public:
     // при отображении без уменьшения эти прямоугольники частично за пределами экрана
-    // игровая зона от 0, 0 до 1700, 1700
+    // игровая зона от 1, 1 до 1700, 1700
     // первая стена граница карты
     std::vector<SDL_Rect> walls = {
-        {0, 0, 1700, 1700},
+        {1, 1, 1700, 1700},
         {1250, 1300, 150, 200},
         {250, 300, 350, 400},
         {450, 500, 550, 600}};
@@ -93,7 +86,7 @@ public:
     //! я остановился тут, надо чтобы лучи исходили из центра персонажа а не угла
     void drawRayAnd3D(int a)
     {
-        int rayLength = 650; // Длина луча
+        int rayLength = 680; // Длина луча
 
         int endX = round((player.x) + cos(degToRad(playerAngle + a)) * rayLength);
         int endY = round((player.y) + sin(degToRad(playerAngle + a)) * rayLength);
@@ -124,11 +117,6 @@ public:
             endY = boost::geometry::get<1>(closestPoint);
         }
 
-        int distanceToClosestPoint = round(boost::geometry::distance(Point(player.x, player.y), Point(endX, endY)));
-        SDL_Rect line3D = {(a + 30) * (a + 30), 480 - distanceToClosestPoint / 2, (a + 30) * (a + 60), distanceToClosestPoint / 2};
-        SDL_SetRenderDrawColor(renderer, 180, 180, 180, 255);
-        SDL_RenderFillRect(renderer, &line3D);
-
         if (a == 30)
         {
             for (int i = 0; i < static_cast<int>(walls.size()); i++)
@@ -138,26 +126,29 @@ public:
                 wall.y /= 5;
                 wall.w /= 5;
                 wall.h /= 5;
-                if (i != 0)
-                {
-                    SDL_SetRenderDrawColor(renderer, 220, 220, 220, 255);
-                    SDL_RenderDrawRect(renderer, &wall);
-                }
-                else
-                {
-                    SDL_SetRenderDrawColor(renderer, 140, 140, 140, 255);
-                    SDL_RenderFillRect(renderer, &wall);
-                }
+
+                SDL_SetRenderDrawColor(renderer, 220, 220, 220, 255);
+                SDL_RenderDrawRect(renderer, &wall);
             }
         }
 
+        //! чинить чтобы все выводилось правильно тут
+        if (endX != round((player.x) + cos(degToRad(playerAngle + a)) * rayLength) and endY != round((player.y) + sin(degToRad(playerAngle + a)) * rayLength))
+        {
+            int distanceToClosestPoint = round(boost::geometry::distance(Point(player.x, player.y), Point(endX, endY)));
+            SDL_Rect line3D = {a * a + 150, 720 + distanceToClosestPoint + (a + 30), a * a - 150, 720 - distanceToClosestPoint + (a + 30)};
+            SDL_SetRenderDrawColor(renderer, 180, 180, 180, 255);
+            SDL_RenderFillRect(renderer, &line3D);
+        }
+
+        // кривое отображение лучей для тестов
         SDL_SetRenderDrawColor(renderer, 37, 208, 0, 255);
         SDL_RenderDrawLine(renderer, (player.x / 5), (player.y / 5), (endX / 5), (endY / 5));
     }
 
     void display() // прямоугольники уменьшены в 5 раз на мини карте в сравнении с вектором walls
     {
-        for (int i = -30; i < 30; i++)
+        for (int i = -30; i <= 30; i++)
         {
             drawRayAnd3D(i);
         }

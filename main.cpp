@@ -132,12 +132,11 @@ public:
             }
         }
 
-        //! чинить чтобы все выводилось правильно тут
         if (endX != round((player.x) + cos(degToRad(playerAngle + a)) * rayLength) and endY != round((player.y) + sin(degToRad(playerAngle + a)) * rayLength))
         {
             int distanceToClosestPoint = round(boost::geometry::distance(Point(player.x, player.y), Point(endX, endY)));
-            SDL_Rect line3D = {a * a + 150, 720 + distanceToClosestPoint + (a + 30), a * a - 150, 720 - distanceToClosestPoint + (a + 30)};
-            SDL_SetRenderDrawColor(renderer, 180, 180, 180, 255);
+            SDL_Rect line3D = {a + 120 * 6, distanceToClosestPoint / 2, 10, rayLength - (distanceToClosestPoint / 2) * 2}; //! чинить, для починки увеличить изображение и ничего более
+            SDL_SetRenderDrawColor(renderer, rayLength - distanceToClosestPoint / 5, rayLength - distanceToClosestPoint / 5, rayLength - distanceToClosestPoint / 5, 255);
             SDL_RenderFillRect(renderer, &line3D);
         }
 

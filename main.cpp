@@ -52,6 +52,7 @@ public:
     // при отображении без уменьшения эти прямоугольники частично за пределами экрана
     // игровая зона от 0, 0 до 1700, 1700
     std::vector<SDL_Rect> walls = {
+        {0, 0, 1700, 1700},
         {1250, 1300, 150, 200},
         {250, 300, 350, 400},
         {450, 500, 550, 600}};
@@ -95,8 +96,8 @@ public:
     {
         int rayLength = 650; // Длина луча
 
-        int endX = round((player.x + 15) + cos(degToRad(playerAngle + a)) * rayLength);
-        int endY = round((player.y + 15) + sin(degToRad(playerAngle + a)) * rayLength);
+        int endX = round((player.x) + cos(degToRad(playerAngle + a)) * rayLength);
+        int endY = round((player.y) + sin(degToRad(playerAngle + a)) * rayLength);
 
         std::vector<Point> intersectionPoints;
 
@@ -106,7 +107,7 @@ public:
             Segment bottomSegment = {Point(walls[i].x, walls[i].y + walls[i].h), Point(walls[i].x + walls[i].w, walls[i].y + walls[i].h)};
             Segment leftSegment = {Point(walls[i].x, walls[i].y), Point(walls[i].x, walls[i].y + walls[i].h)};
             Segment rightSegment = {Point(walls[i].x + walls[i].w, walls[i].y), Point(walls[i].x + walls[i].w, walls[i].y + walls[i].h)};
-            Segment raySegment = {Point(player.x + 15, player.y + 15), Point(endX, endY)};
+            Segment raySegment = {Point(player.x, player.y), Point(endX, endY)};
 
             boost::geometry::intersection(raySegment, topSegment, intersectionPoints);
             boost::geometry::intersection(raySegment, bottomSegment, intersectionPoints);
@@ -116,7 +117,7 @@ public:
 
         Point closestPoint(0, 0);
         boost::geometry::index::rtree<Point, boost::geometry::index::quadratic<16>> rtree(intersectionPoints.begin(), intersectionPoints.end());
-        rtree.query(boost::geometry::index::nearest(Point(player.x + 15, player.y + 15), 1), &closestPoint);
+        rtree.query(boost::geometry::index::nearest(Point(player.x, player.y), 1), &closestPoint);
 
         if (boost::geometry::get<0>(closestPoint) != 0 && boost::geometry::get<1>(closestPoint) != 0)
         {
@@ -149,7 +150,7 @@ public:
             drawRayAnd3D(i);
         }
 
-        SDL_Rect minimapPlayer = {player.x / 5, player.y / 5, player.w, player.h};
+        SDL_Rect minimapPlayer = {player.x / 5 - 15, player.y / 5 - 15, player.w, player.h};
         SDL_RenderCopy(renderer, playerMarker, NULL, &minimapPlayer);
     }
 };

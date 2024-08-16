@@ -86,7 +86,7 @@ public:
     //! я остановился тут, надо чтобы лучи исходили из центра персонажа а не угла
     void drawRayAnd3D(int a)
     {
-        int rayLength = 680; // Длина луча
+        int rayLength = 680; // Длина луча по умолчанию 680
 
         int endX = round((player.x) + cos(degToRad(playerAngle + a)) * rayLength);
         int endY = round((player.y) + sin(degToRad(playerAngle + a)) * rayLength);
@@ -135,7 +135,7 @@ public:
         if (endX != round((player.x) + cos(degToRad(playerAngle + a)) * rayLength) and endY != round((player.y) + sin(degToRad(playerAngle + a)) * rayLength))
         {
             int distanceToClosestPoint = round(boost::geometry::distance(Point(player.x, player.y), Point(endX, endY)));
-            SDL_Rect line3D = {120 * 6 + 20 * a, distanceToClosestPoint / 2 + 60, 30, rayLength - distanceToClosestPoint + 60}; //! чинить, для починки увеличить изображение и ничего более
+            SDL_Rect line3D = {120 * 6 + 20 * a, distanceToClosestPoint / 2 + 60, 30, rayLength - distanceToClosestPoint + 60};
             SDL_SetRenderDrawColor(renderer, rayLength - distanceToClosestPoint / 5, rayLength - distanceToClosestPoint / 5, rayLength - distanceToClosestPoint / 5, 255);
             SDL_RenderFillRect(renderer, &line3D);
         }

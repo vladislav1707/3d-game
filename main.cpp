@@ -83,7 +83,6 @@ public:
 
     float degToRad(int a) { return a * M_PI / 180.0; }
 
-    //! я остановился тут, надо чтобы лучи исходили из центра персонажа а не угла
     void drawRayAnd3D(int a)
     {
         int rayLength = 680; // Длина луча по умолчанию 680
